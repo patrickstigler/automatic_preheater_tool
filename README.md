@@ -12,4 +12,4 @@ Just a simple tool to trigger the preheater button on the remote.
 The remote should be set to heat for 120 mins. for this concept.
 
 The software will wait for 120mins and start the temperature check all 2 mins. 
-As soon as the temperature drops below 20c. the remote button will be pushed and the loop starts again.
+As soon as the temperature drops below 19c. the remote button will be pushed and the loop starts again.
