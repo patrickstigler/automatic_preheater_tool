@@ -33,3 +33,16 @@ The software will wait for 120mins and start the temperature check all 2 mins. A
 * 3 M5x20 screws
 * some filament for your 3D printer - hope you own one
 * some wires, solder, soldering iron
+
+## Wireing
+
+Servo:
+Red(+): --> Arduino 5v
+Black(-): --> Arduino ground
+Yellow(Signal): --> Arduino D9
+
+DHT11:
++: --> Arduino 3.3v
+-: --> Arduino ground
+Signal: --> Arduino D4
+
