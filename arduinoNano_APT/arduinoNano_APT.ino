@@ -2,23 +2,22 @@
 #include <Servo.h>
 
 
-int pinDHT11 = 4;
-int pinServer = 9;
+int DHT11Pin = 4;
+int servoPin = 9;
 
 int pos = 0;    // variable to store the servo position
 
+// config for the automatic heater tool
 int minTempToReactivateHeater = 19;
 int heaterMaxRunningTimeInMin = 120;
 int temperatureCheckInvervalInMin = 2;
+// config end
 
-SimpleDHT11 dht11(pinDHT11);
-
-Servo btnPushServo;  // create servo object to control a servo
-
-
+SimpleDHT11 dht11(DHT11Pin); // create dht11 object to read sensor data
+Servo servo;  // create servo object to control a servo
 
 void setup() {
-  btnPushServo.attach(pinServer);
+  servo.attach(servoPin);
 
   //debugging
   Serial.begin(115200);
@@ -26,51 +25,55 @@ void setup() {
 }
 
 void loop() {
+  // servo go pos 0
+  servo.write(0);
   // read without samples.
   byte temperature = 0;
   byte humidity = 0;
   int err = SimpleDHTErrSuccess;
   if ((err = dht11.read(&temperature, &humidity, NULL)) != SimpleDHTErrSuccess) {
-    //debugging
+    // debugging
     Serial.print("Read DHT11 failed, err="); Serial.println(err);delay(1000);
     return;
   }
   
-  //debugging
+  // debugging
   Serial.print((int)temperature); Serial.println(" *C, "); 
   Serial.print((int)humidity); Serial.println(" H");
 
   if((int)temperature < minTempToReactivateHeater)
   {
-    //debugging
+    // debugging
     Serial.println("temperature below threshold");
     
     pushButton();
     delay(500);
     releaseButton();
     
-    //delay heater time + 5min
+    // delay heater time + 5min
     delay(heaterMaxRunningTimeInMin * 1000 * 60 + 300);
   }
 
- //interval to check temperature
+ // interval to check temperature
   delay(temperatureCheckInvervalInMin * 1000 * 60);
 }
 
 void pushButton(){
-    for (pos = 0; pos <= 90; pos += 1) { // goes from 0 degrees to 180 degrees
+    for (pos = 0; pos <= 60; pos += 1) { // goes from 0 degrees to 90 degrees
     // in steps of 1 degree
-    btnPushServo.write(pos);              // tell servo to go to position in variable 'pos'
+    servo.write(pos);              // tell servo to go to position in variable 'pos'
     delay(15);                       // waits 15ms for the servo to reach the position
   }
+  // debugging
    Serial.println("button pushed");
 }
 
 void releaseButton(){
-    for (pos = 90; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
-    btnPushServo.write(pos);              // tell servo to go to position in variable 'pos'
+    for (pos = 60; pos >= 0; pos -= 1) { // goes from 90 degrees to 0 degrees
+    servo.write(pos);              // tell servo to go to position in variable 'pos'
     delay(15);                       // waits 15ms for the servo to reach the position
   }
+  // debugging
   Serial.println("button released");
 }
 
